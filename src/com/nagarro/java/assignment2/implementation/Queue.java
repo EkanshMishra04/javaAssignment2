@@ -1,25 +1,29 @@
 package com.nagarro.java.assignment2.implementation;
 
+import com.nagarro.java.assignment2.datastructuretype.Iterator;
+import com.nagarro.java.assignment2.datastructuretype.List;
+import com.nagarro.java.assignment2.datastructuretype.MergeSort;
 import com.nagarro.java.assignment2.datastructuretype.Node;
 
-public class Queue<T> {
+public class Queue implements List{
 
-	private Node<T> front=null;
-	private Node<T> rear=null;
-	private Integer size=0;
+	private Node front = null;
+	private Node rear = null;
+	private Integer size = 0;
 
-	public boolean enqueue(T data) {
-		Node<T> node = new Node<>(data);
+//------------------------------------------------//
+	public boolean enqueue(Integer data) {
+		Node node = new Node(data);
 		if (this.front == null) {
 			this.front = this.rear = node;
 		} else {
 			this.rear.next = node;
-			this.rear=node;
+			this.rear = node;
 		}
 		this.size += 1;
 		return true;
 	}
-
+//------------------------------------------------//
 	public boolean dequeue() {
 		if (this.front == null)
 			return false;
@@ -27,17 +31,23 @@ public class Queue<T> {
 		this.size -= 1;
 		return true;
 	}
-
-	public Node<T> peek() {
+//------------------------------------------------//
+	@Override
+	public Node getHead() {
+		return this.front;
+	}
+//------------------------------------------------//
+	public Node peek() {
 		if (this.front == null)
 			return null;
 		return this.front;
 	}
 
-	public boolean contains(T key) {
+//------------------------------------------------//
+	public boolean contains(Integer key) {
 		if (this.front == null)
 			return false;
-		Node<T> curr = this.front;
+		Node curr = this.front;
 		boolean flag = false;
 		while (curr != null) {
 			if (curr.data == key) {
@@ -48,35 +58,48 @@ public class Queue<T> {
 		}
 		return flag;
 	}
+
+//------------------------------------------------//
 	public Integer size() {
 		return this.size;
 	}
-	
-	
-	public Node<T> center(){	
+
+//------------------------------------------------//
+	public Node center() {
 		if (this.front == null)
 			return null;
-		Node<T> curr = this.front;
-		int len =0;
+		Node curr = this.front;
+		int len = 0;
 		while (curr != null) {
-			if (len==this.size/2) {
-			break;
+			if (len == this.size / 2) {
+				break;
 			}
-			len+=1;
-		curr = curr.next;
-	}
+			len += 1;
+			curr = curr.next;
+		}
 		return curr;
-}
+	}
+
 //---------------------------------------------------------------------------------//
-	//public Node<T> sort()//
+	public Node sort() {
+		this.front = MergeSort.mergeSort(this.front);
+		this.rear = this.front;
+		while (this.rear.next != null) {
+			this.rear = this.rear.next;
+		}
+		System.out.println("LinkedList has been sorted.\n");
+		this.traverse();
+		return this.front;
+	}
+
 //---------------------------------------------------------------------------------//
-	public Node<T> reverse(){
+	public Node reverse() {
 		if (this.size() == 0 || this.size() == 1)
 			return this.front;
-		this.rear=this.front;
-		Node<T> curr = this.front;
-		Node<T> prev = null;
-		Node<T> frwd;
+		this.rear = this.front;
+		Node curr = this.front;
+		Node prev = null;
+		Node frwd;
 		while (curr != null) {
 			frwd = curr.next;
 			curr.next = prev;
@@ -86,38 +109,43 @@ public class Queue<T> {
 		this.front = prev;
 		return this.front;
 	}
-//Iterator
-	public void Traverse() {
-		if(this.front==null)
+//------------------------------------------------------------------------------------//
+	public void traverse() {
+		if (this.front == null)
 			return;
-		Node<T> curr = this.front;
-		while(curr!=null) {
-			System.out.println(curr.data);
-			curr=curr.next;
+		String str ="";
+		Node curr = this.front;
+		while (curr != null) {
+			str = str+curr.data+"-->";
+			curr = curr.next;
 		}
+		System.out.println("Queue Traversal is "+str+"X");
 	}
+//------------------------------------------------------------------------------------//
 	public static void main(String[] args) {
-		Queue<String> q = new Queue<>();
-		q.enqueue("ABC");
-		q.enqueue("DEF");
-		q.enqueue("GHI");
-		q.enqueue("JKL");
-		q.enqueue("MNO");
-		q.enqueue("PQR");
-		q.Traverse();
-		System.out.println("hahaha");
+		Queue q = new Queue();
+		q.enqueue(1);
+		q.enqueue(2);
+		q.enqueue(3);
+		q.enqueue(4);
+		q.enqueue(5);
+		q.enqueue(6);
+		q.traverse();
+
 		q.dequeue();
-		q.Traverse();
-		System.out.println("queue has size of "+q.size());
-		System.out.println("hahaha");
-		System.out.println("center is "+q.center().data);
-		System.out.println("hahaha");
-		System.out.println(q.contains("MNO"));
-		System.out.println("hahaha");
-		System.out.println(q.peek().data);
+		q.traverse();
+		System.out.println("queue has size of " + q.size());
+		System.out.println("center is " + q.center().data);
+		System.out.println("Query for contain is "+q.contains(5));
 		
-		
+		System.out.println("Peeked data is "+q.peek().data);
+
+		System.out.println("Iterator Now Accessing Data");
+		Iterator itr = new Iterator(q);
+		while(itr.hasNext())
+			System.out.println("data is - "+itr.next().data);
 
 	}
+
 
 }

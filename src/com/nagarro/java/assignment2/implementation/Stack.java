@@ -1,16 +1,23 @@
 package com.nagarro.java.assignment2.implementation;
 
+import com.nagarro.java.assignment2.datastructuretype.Iterator;
 import com.nagarro.java.assignment2.datastructuretype.List;
+import com.nagarro.java.assignment2.datastructuretype.MergeSort;
 import com.nagarro.java.assignment2.datastructuretype.Node;
 
-public class Stack<T> implements List {
+public class Stack implements List {
 
-	private Node<T> head = null;
+	private Node head = null;
 	private Integer size = 0;
 
+	@Override
+	public Node getHead() {
+		return this.head;
+	}
+
 //-------------------------public methods--------------------------------------------------//
-	public boolean push(T data) {
-		Node<T> node = new Node<>(data);
+	public boolean push(Integer data) {
+		Node node = new Node(data);
 		if (this.head == null) {
 			this.head = node;
 			this.head.next = null;
@@ -23,27 +30,29 @@ public class Stack<T> implements List {
 		return true;
 	}
 
-	public Node<T> pop() {
+//-----------------------------------------------------------------------------------------//
+	public Node pop() {
 		if (this.size <= 0) {
 			System.err.println("Stack is Empty!");
 			return null;
 		}
-		Node<T> node = head;
+		Node node = head;
 		head = head.next;
 		this.size = this.size - 1;
 		return node;
 	}
 
-	public Node<T> peek() {
-//		if()
+//-------------------------------------------------------------------------------------------//
+	public Node peek() {
 		return this.head;
 	}
 
-	public boolean contains(T key) {
+//------------------------------------------------------------------------------------------//
+	public boolean contains(Integer key) {
 		if (this.size <= 0)
 			return false;
 		boolean flag = false;
-		Node<T> curr = this.head;
+		Node curr = this.head;
 		while (curr != null) {
 			if (curr.data == key) {
 				flag = true;
@@ -54,23 +63,28 @@ public class Stack<T> implements List {
 		return flag;
 	}
 
+//-------------------------------------------------------------------------------------------//
 	@Override
 	public void traverse() {
 		if (this.size == 0)
 			return;
-		Node<T> curr = head;
+		System.out.println("printing stack content");
+		Node curr = head;
+		String str="";
 		while (curr != null) {
-			System.out.println(curr.data);
+			str = str+curr.data+"-->";
 			curr = curr.next;
 		}
+		System.out.println(str+"X\n");
 	}
 
+//-------------------------------------------------------------------------------------------//
 	@Override
-	public Node<T> center() {
+	public Node center() {
 		if (this.size <= 0)
 			return null;
 		Integer half = Math.floorDiv(size, 2);
-		Node<T> curr = head;
+		Node curr = head;
 		int count = 1;
 		while (curr != null && count != half) {
 			curr = curr.next;
@@ -80,24 +94,21 @@ public class Stack<T> implements List {
 		return curr;
 	}
 
+//---------------------------------------------------------------------------------------------//
 	@Override
 	public Integer size() {
 		return this.size;
 	}
+//--------------------------------------------------------------------------------------------//
 
 	@Override
-	public Object sort() {
-		return null;
-	}
-
-	@Override
-	public Object reverse() {
+	public Node reverse() {
 		if (this.size() == 0 || this.size() == 1)
 			return this.head;
 
-		Node<T> curr = this.head;
-		Node<T> prev = null;
-		Node<T> frwd;
+		Node curr = this.head;
+		Node prev = null;
+		Node frwd;
 		while (curr != null) {
 			frwd = curr.next;
 			curr.next = prev;
@@ -108,14 +119,16 @@ public class Stack<T> implements List {
 		return this.head;
 	}
 
+//------------------------------------------------------------------------------------------------//
 	@Override
-	public Object iterator() {
-		return null;
+	public Node sort() {
+		this.head = MergeSort.mergeSort(head);
+		return this.head;
 	}
 
+//---------------------------------------------------------------------------------------------------//
 	public static void main(String[] args) {
-		Stack<Integer> stk = new Stack<>();
-//		System.out.println("head is "+stk.head);
+		Stack stk = new Stack();
 		stk.push(80);
 		stk.push(82);
 		stk.push(84);
@@ -128,18 +141,24 @@ public class Stack<T> implements List {
 		stk.push(98);
 		stk.push(100);
 		stk.push(102);
-		System.out.println("Stack has a size of " + stk.size());
-		System.out.println("Stack has a center of " + stk.center().data);
-		System.out.println("Stack has elements of ");
+		System.out.println("Stack has a size of " + stk.size()+"\n");
+		System.out.println("Printing elemets via Iterator class");
+		Iterator itr = new Iterator(stk);
+		while (itr.hasNext())
+			System.out.println(itr.next().data);
+		
+		System.out.println("\nStack has a center with element value " + stk.center().data+"\n");
+
 		stk.traverse();
-//		System.out.println("popped element is " + stk.pop().data);
-		System.out.println("peeked element is "+stk.peek().data);
-//stk.pop();
-//stk.pop();
-//stk.pop();
-//stk.pop();
-//stk.traverse();
+		System.out.println("popped element is " + stk.pop().data+"\n");
+		System.out.println("peeked element is " + stk.peek().data+"\n");
+		stk.sort();
+		stk.traverse();
+		
 		stk.reverse();
 		stk.traverse();
+
+		
 	}
+
 }

@@ -1,16 +1,16 @@
 package com.nagarro.java.assignment2.datastructuretype;
 
 public interface List {
-
+	
+	public Node getHead();
 	public void traverse();
 
-	public Object center();
+	public Node center();
 
 	public Integer size();
 
-	public Object sort();
+	public Node sort();
 
-	public Object reverse();
+	public Node reverse();
 
-	public Object iterator();
 }

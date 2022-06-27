@@ -1,74 +1,98 @@
 package com.nagarro.java.assignment2.implementation;
 
 import com.nagarro.java.assignment2.datastructuretype.List;
+import com.nagarro.java.assignment2.datastructuretype.MergeSort;
 import com.nagarro.java.assignment2.datastructuretype.Node;
+import com.nagarro.java.assignment2.datastructuretype.Iterator;
 
-public class LinkedList<T> implements List {
+//------------------------------------------------------------------------------//
+public class LinkedList implements List {
 
-	private Node<T> tail = null;
-	private Node<T> head = null;
+	private Node tail = null;
+	private Node head = null;
+	private Integer size = 0;
+
+	@Override
+	public Node getHead() {
+		return this.head;
+	}
 
 //----------------------------------------------------------------------------------------//
-	private boolean insertAtFirst(T data) {
-		Node<T> node = new Node<>(data);
+	private boolean insertAtFirst(Integer data) {
+		Node node = new Node(data);
 		node.next = head;
 		this.tail = node;
 		this.head = node;
+
 		return true;
 	}
 
 //----------------------------------------------------------------------------------------//
-	public boolean insert(T data) {
+	public void insert(Integer data) {
+		boolean flag = false;
 		if (head == null) {
 			this.insertAtFirst(data);
-			return true;
-		} else if (this.tail == null)
-			return false;
-		Node<T> node = new Node<>(data);
-		this.tail.next = node;
-		this.tail = node;
-		return true;
+			this.size += 1;
+			flag = true;
+		} else if (this.tail == null) {
+			System.err.println("some how tail pointer has not been incremented!");
+			flag = false;
+		} else {
+			Node node = new Node(data);
+			this.tail.next = node;
+			this.tail = node;
+			this.size += 1;
+			flag = true;
+		}
+		if (flag)
+			System.out.println("Properly Insertion Done!");
+		else
+			System.exit(1);
 	}
 
 //---------------------------------------------------------------------------------------//
-	public boolean insertAtPosition(T data, int pos) {
-		if (this.head == null || pos < 0)
-			return false;
-
-		if (this.size() < pos)
-			return false;
-
+	public boolean insertAtPosition(Integer data, int pos) {
+		boolean flag;
+		if (this.head == null || pos < 1) {
+			System.err.println("Dear User Position Starts From 1!");
+			flag = false;
+		}
+		if (this.size() < pos) {
+			flag = false;
+			return flag;
+		}
 		if (this.size() == pos) {
-			return insert(data);
+			this.insert(data);
 		}
 
 		if (pos == 0) {
-			Node<T> node = new Node<>(data);
+			Node node = new Node(data);
 			node.next = this.head;
 			this.head = node;
-			return true;
+			flag = true;
 		}
 
-		Node<T> curr = this.head;
+		Node curr = this.head;
 		while (pos > 0) {
 			curr = curr.next;
 			pos--;
 		}
 
-		Node<T> node = new Node<>(data);
+		Node node = new Node(data);
 		this.tail.next = node;
 		this.tail = node;
-		return true;
+		flag = true;
+		return flag;
 	}
 
 //-------------------------------------------------------------------------------------//
 	@Override
-	public Node<T> center() {
+	public Node center() {
 		if (this.size() == 0 || this.size() == 1 || this.size() == 2)
 			return this.head;
 
-		Node<T> slow = this.head;
-		Node<T> fast = this.head;
+		Node slow = this.head;
+		Node fast = this.head.next;
 
 		while (fast != null && fast.next != null) {
 			fast = fast.next.next;
@@ -81,7 +105,7 @@ public class LinkedList<T> implements List {
 	@Override
 	public Integer size() {
 		int len = 0;
-		Node<T> curr = this.head;
+		Node curr = this.head;
 		while (curr != null) {
 			curr = curr.next;
 			len++;
@@ -93,21 +117,24 @@ public class LinkedList<T> implements List {
 //------------------------------------------------------------------------------------//
 	@Override
 	public void traverse() {
-		Node<T> curr = this.head;
+		System.out.println("\nPrinting the linked list contents - ");
+		String str = "";
+		Node curr = this.head;
 		while (curr != null) {
-			System.out.println(curr.data);
+			str = str + curr.data + "-->";
 			curr = curr.next;
 		}
+		System.out.println(str + "X\n");
 	}
 
 //-------------------------------------------------------------------------------------//
-	public boolean delete(T key) {
+	public boolean delete(Integer key) {
 		int size = this.size();
 		if (size == 0) {
 			return false;
 		}
-		Node<T> curr = this.head;
-		Node<T> prev = this.head;
+		Node curr = this.head;
+		Node prev = this.head;
 		while (curr != null) {
 			if (curr.data == key) {
 				prev.next = curr.next;
@@ -117,45 +144,54 @@ public class LinkedList<T> implements List {
 				curr = curr.next;
 			}
 		}
-		if (curr == null || curr == key) {
-			return true;
-		}
-		return false;
+		return (curr == null || curr.data == key);
 	}
 
 //-------------------------------------------------------------------------------------//
 	public boolean deleteAtPosition(int pos) {
 
-		if (this.size() == 0 || this.size() < pos) {
+		if (this.size() == 0 || this.size() < pos || pos < 1) {
+			System.err.println("\n!!Some Error while Deletion as Linkedlist is empty or position is less than 1!!\n");
 			return false;
 		}
 		boolean flag = false;
-		Node<T> curr = this.head;
-		Node<T> prev = this.head;
+		Node curr = this.head;
+		Node prev = this.head;
 		int dist = 1;
 		while (curr != null) {
 			if (dist == pos) {
 				prev.next = curr.next;
 				flag = true;
+				System.out.println("Deletion done as position " + pos + "\n");
 				break;
 			}
 			dist++;
 			prev = curr;
 			curr = curr.next;
+
 		}
+
 		return flag;
 	}
 
-//-----------------SORT---------------------------------------------------------------//
+//------------------------------------------------------------------------------------//
+	@Override
+	public Node sort() {
+		this.head = MergeSort.mergeSort(this.head);
+		System.out.println("LinkedList has been sorted.\n");
+		this.traverse();
+		return this.head;
+	}
+
 //----------------ITERATOR------------------------------------------------------------//
 //------------------------------------------------------------------------------------//
 	@Override
-	public Node<T> reverse() {
+	public Node reverse() {
 		if (this.size() == 0 || this.size() == 1)
 			return this.head;
-		Node<T> curr = this.head;
-		Node<T> prev = null;
-		Node<T> frwd;
+		Node curr = this.head;
+		Node prev = null;
+		Node frwd;
 		while (curr != null) {
 			frwd = curr.next;
 			curr.next = prev;
@@ -163,12 +199,14 @@ public class LinkedList<T> implements List {
 			curr = frwd;
 		}
 		this.head = prev;
+		System.out.println("Linked list has been reversed.\n");
+		this.traverse();
 		return this.head;
 	}
 
 //-------------------------------------------------------------------------------------//
 	public static void main(String[] args) {
-		LinkedList<Integer> ll = new LinkedList<>();
+		LinkedList ll = new LinkedList();
 		ll.insert(12);
 		ll.insert(14);
 		ll.insert(16);
@@ -180,25 +218,22 @@ public class LinkedList<T> implements List {
 		ll.insert(28);
 		ll.insert(30);
 		ll.traverse();
+		ll.reverse();
+		System.out.println("Printing via Iterator!");
+		Iterator itr = new Iterator(ll);
+		while (itr.hasNext()) {
+			System.out.println(itr.next().data);
+		}
 		System.out.println("size of linkedlist is " + ll.size());
 		System.out.println("center element is " + ll.center().data);
-		System.out.println(ll.deleteAtPosition(8));
-		ll.traverse();
+		ll.deleteAtPosition(0);
+//		ll.traverse();
+//		System.out.println();
 		ll.head = ll.reverse();
-		ll.traverse();
-
+//		System.out.println();
+//		ll.traverse();
+//		System.out.println();
+		ll.sort();
+//		ll.traverse();
 	}
-
-	@Override
-	public Node<T> iterator() {
-		return null;
-
-
-	}
-
-	@Override
-	public Node<T> sort() {
-		return null;
-	}
-
 }
