@@ -3,92 +3,90 @@ package com.nagarro.java.assignment2.implementation;
 import java.util.ArrayList;
 
 import com.nagarro.java.assignment2.datastructuretype.HashNode;
-import com.nagarro.java.assignment2.datastructuretype.List;
-import com.nagarro.java.assignment2.datastructuretype.Node;
+
 
 class HtIterator {
 	private int size = 0;
-	private int pos = 0;
-	private Integer total;
-//	private HashNode[] HashArr;
-//	private ArrayList<HashNode>arr ;
+	private int pos = -1;
+	private ArrayList<HashNode>HashArr ;
 	
 	public HtIterator(HashTable ht) {
-		this.size = ht.size();
-		System.out.println(ht.arr.);
+		this.HashArr = ht.getHashArr();
+		this.size = this.HashArr.size();
 	}
 	
-//	private void addElements() {
-//		for(int i=0;i<this.size;i++)
-//		{
-//			HashNode temp = HashArr.;
-//			while(temp!=null)
-//			{
-//				arr.add(temp);
-//				temp=temp.next;
-//			}
-//		}
-//		for(HashNode item: arr) {
-//			System.out.println(item.key+" "+item.value);
-//		}
+	public boolean hasNext() {
+		return (++pos < this.size);
 	}
-	
-//	public boolean hasNext() {
-//		return (++pos <= this.total);
-//
-//	}
-//
-//	public Node next() {
-//		
-//		return retNode;
-	
+
+	public HashNode next() {
+		return this.HashArr.get(pos);
+	}
+}
 
 
 //--------------------------//
 public class HashTable {
-	private Integer size;
-	public HashNode[] arr;
+	private Integer size=1024;
+	private ArrayList<HashNode> HashArr = new ArrayList<>();
+	private HashNode[] arr;
 
 //------------//
-	public HashTable(int inputSize) {
-		this.size = inputSize;
+	public HashTable() {
 		arr = new HashNode[size];
 	}
-	
-//	public HashNode[] getArr() {
-//		return this.arr;
-//	}
+
 //----------------------------------------------------------------------------------------------------//
 	private int hash(String key) {
-		int hashCode = key.length() % size;
-		return hashCode;
+		return key.length() % size;
 	}
+
 //----------------------------------------------------------------------------------------------------//
-//	public HashNode[]  getArr() {
-//		return this.arr;
-//		}
+	public ArrayList<HashNode>  getHashArr() {
+		return this.HashArr;
+		}
 //----------------------------------------------------------------------------------------------------//
 	public boolean insert(String key, String value) {
-		if(key==null){
-		System.err.println("Key cannot be null.. Exiting!");
-		System.exit(1);
+		if (key == null) {
+			System.err.println("Key cannot be null.. Exiting!");
+			System.exit(1);
 		}
+		
 		int hashCode = this.hash(key);
 		HashNode node = new HashNode(key, value);
+		
 		// first input
 		if (this.arr[hashCode] == null) {
 			this.arr[hashCode] = node;
+			this.HashArr.add(node);
 			return true;
 		}
 		// multiple input
 		else {
+			if(this.contains(key)) {
+				
+				HashNode curr = this.arr[hashCode];
+				while (curr.key!=key) {
+					curr = curr.next;
+				}
+				for(HashNode item:HashArr) {
+					if(item.key==key) {
+						item.value=value;
+					break;
+					}
+				}
+				curr.value=value;
+			}
+			else {
 			HashNode curr = this.arr[hashCode];
-			while (curr.next != null) {
+			while (curr.next != null && curr.key!=key) {
 				curr = curr.next;
 			}
 			curr.next = node;
+			this.HashArr.add(node);
 		}
 		return true;
+	}
 	}
 
 //------------------------------------------------------------------------------------//
@@ -138,14 +136,15 @@ public class HashTable {
 			}
 			return temp.value;
 		} else {
-			String msg = "No such key found!";
-			return msg;
+			return "No such key found!";
 		}
 	}
+
 //-----------------------------------------------------------------------------------------//
 	public Integer size() {
 		return this.size;
 	}
+
 //------------------------------------------------------------------------------------------//
 //	Iterator
 //------------------------------------------------------------------------------------------//
@@ -161,15 +160,19 @@ public class HashTable {
 
 		}
 	}
-	
+
 	public static void main(String[] args) {
-		HashTable ht = new HashTable(5);
-		ht.insert("abc","123");
-		ht.insert("def","456");
-		ht.insert("ghi","789");
-		ht.insert("jhl","123");
-//		ht.insert(null,"3245");
-//		ht.traverse();
+		HashTable ht = new HashTable();
+		ht.insert("abc", "123");
+		ht.insert("defg", "456");
+		ht.insert("hijkl", "789");
+		ht.insert("mnopqr", "123");
+		ht.insert("ekansh", "mishra");
+		ht.insert("papa456", "mummy");
+		ht.insert("chacha67899", "chachi");
+		ht.insert("mnopqr", "786");
+	  //ht.insert(null,"3245");
+		ht.traverse();
 //		System.out.println(ht.contains("ghi"));
 //		System.out.println(ht.contains("xyz"));
 //		System.out.println(ht.getValueByKey("ghi"));
@@ -179,9 +182,12 @@ public class HashTable {
 //		ht.delete("xyz");
 //		ht.traverse();
 		System.out.println(ht.size());
+
 		HtIterator itr = new HtIterator(ht);
-//		itr.
-		
-	}
+		while(itr.hasNext())
+		{
+			System.out.print(itr.next().key+" -->>> "+itr.next().value+"\n");
+		}
 	
+}
 }

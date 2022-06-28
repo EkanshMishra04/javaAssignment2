@@ -4,16 +4,17 @@ import java.util.ArrayList;
 
 public class Heap {
 
-	public ArrayList<Integer> array;
-	int size;
-
+	private ArrayList<Integer> array;
+	
 	public Heap() {
-		this.array = new ArrayList<Integer>();
-		this.size = array.size();
+		this.array = new ArrayList<>();
 	}
-
-//---------------------------------------------------------------------------------------------------------//
-	private void heapify(ArrayList<Integer> hT, int i) {
+	public ArrayList<Integer> getArray(){
+		return this.array;
+	}
+//----------------------------Internal Method to Perform Heapify Action-----------------------------------------------------------//
+	private void heapify(int i) {
+		ArrayList<Integer> hT = this.array;
 		int size = hT.size();
 		// Find the largest among root, left child and right child
 		int largest = i;
@@ -30,32 +31,57 @@ public class Heap {
 			hT.set(largest, hT.get(i));
 			hT.set(i, temp);
 
-			this.heapify(hT, largest);
+			this.heapify(largest);
 		}
 	}
+//-------------------------------------------------------------------------//
+	public int center() {
+		int mid = this.array.size();
+		mid=mid/2;
+		return this.array.get(mid);
+	}
 
+//----------------------Reverse action ----------------------------//
+
+	public void reverse() {
+		ArrayList<Integer> newArr = new ArrayList<>();
+		for(int i=this.array.size()-1;i>=0;i--)
+		{
+			newArr.add(this.array.get(i));
+		}
+
+		for (Integer i : newArr) {
+			System.out.print(i + " ");
+		}
+		this.array=newArr;
+		System.out.println();	
+	}
 //---------------------Function to insert an element into the tree---------------------------------------//
-	void insert(ArrayList<Integer> hT, int newNum) {
+	public void insert(int newNum) {
+		ArrayList<Integer> hT = this.array;
 		int size = hT.size();
 		if (size == 0) {
 			hT.add(newNum);
 		} else {
 			hT.add(newNum);
 			for (int i = size / 2 - 1; i >= 0; i--) {
-				this.heapify(hT, i);
+				this.heapify(i);
 			}
 		}
 	}
-
+//-------------------------------------------------------------------------------------------//
+		public int len() {
+			return this.array.size();
+		}
 //---------------------get top priority element from the heap and return--------------------------------//
-	private int getTop() {
+	public int getTop() {
 		return this.array.get(0);
 
 	}
 
 //---------------------Function to delete an element from the tree--------------------------------------//
-	void deleteNode() {
-		ArrayList<Integer> hT=this.array;
+	public void deleteNode() {
+		ArrayList<Integer> hT = this.array;
 		int num = this.getTop();
 		int size = hT.size();
 		int i;
@@ -70,34 +96,25 @@ public class Heap {
 
 		hT.remove(size - 1);
 		for (int j = size / 2 - 1; j >= 0; j--) {
-			this.heapify(hT, j);
+			this.heapify(j);
 		}
 	}
 
 //--------------------------------Print the tree-----------------------------------------------------//
-	void printArray() {
+	public void printArray() {
 		for (Integer i : this.array) {
 			System.out.print(i + " ");
 		}
 		System.out.println();
 	}
-
-//--------------------------------- Driver code------------------------------------------------------//
-	public static void main(String args[]) {
-
-		Heap h = new Heap();
-		h.insert(h.array, 3);
-		h.insert(h.array, 4);
-		h.insert(h.array, 9);
-		h.insert(h.array, 5);
-		h.insert(h.array, 2);
-
-	    System.out.println("Max-Heap array: ");
-	    h.printArray();
-//
-	    h.deleteNode();
-	    h.deleteNode();
-	    System.out.println("After deleting an element: ");
-	    h.printArray();
-	}
+//------------------------------Contains??-----------------------------------------------------------//
+	public boolean contains(int input)
+	{
+		for(Integer item : this.array)
+		{
+			if(item==input)
+				return true;
+		}
+		return false;
+}
 }
